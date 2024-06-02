@@ -38,7 +38,7 @@ nav .wallet-container {
 	padding: 5px 15px;
 	color: var(--font-color);
 	border-radius: 20px;
-	max-width: 120px;
+	max-width: 150px;
 	overflow-y: hidden;
 	overflow-x: auto;
 
@@ -599,4 +599,37 @@ footer .social-icons i:hover {
 	height: auto;
 	object-fit: contain;
 	margin: auto;
+}
+
+/* responsive design */
+/* mobile responsive */
+@media screen and (max-width: 768px) {
+	nav .wallet-container {
+		max-width: 150px;
+	}
+
+	.product-items {
+		display: grid;
+		grid-template-columns: repeat(2, 180px) !important;
+		padding: 0 10px !important;
+		gap: 20px 0px !important ;
+		max-width: 100% !important;
+	}
+
+	.product-item {
+		min-width: 170px !important;
+		max-width: 170px !important;
+		margin: 0 !important;
+		overflow: hidden !important;
+	}
+
+	.order-popup h1 {
+		text-align: center;
+		width: 100%;
+		font-size: 30px;
+	}
+
+	.order-popup {
+		padding: 20px 0 !important;
+	}
 }
