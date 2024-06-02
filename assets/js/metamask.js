@@ -63,7 +63,7 @@ async function payTo({ account, placeOrderBtn, order }) {
 
 		const tx = await contract.methods
 			.orderCoffee(coffeeName, image, price, quantity)
-			.send({ from: account, value: total });
+			.send({ from: account, value: total, gas: 200000 });
 
 		// get balanceof contract
 		const balance = await contract.methods.getBalance().call();
