@@ -61,9 +61,16 @@ async function payTo({ account, placeOrderBtn, order }) {
 		let price = total;
 		const { image } = product;
 
-		const tx = await contract.methods
-			.orderCoffee(coffeeName, image, price, quantity)
-			.send({ from: account, value: total, gas: 200000 });
+		const txObject = {
+			from: account,
+			to: contract.options.address,
+			gas: 200000,
+			gasPrice: web3.utils.toWei('10', 'gwei'),
+			value: total,
+			data: contract.methods.orderCoffee(coffeeName, image, price, quantity).encodeABI(),
+		};
+
+		const tx = await contract.methods.orderCoffee(coffeeName, image, price, quantity).send(txObject);
 
 		// get balanceof contract
 		const balance = await contract.methods.getBalance().call();
