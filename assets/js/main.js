@@ -1,3 +1,4 @@
+import { connectWallet } from './metamask.js';
 import products from './products.js';
 const productItems = document.querySelector('.product-items');
 const popupOrder = document.querySelector('.order-popup');
@@ -81,4 +82,6 @@ function showOrder(product) {
 	});
 }
 
-function placeOrder({ product, total }) {}
+async function placeOrder({ product, total }) {
+	const account = await connectWallet().account;
+}
