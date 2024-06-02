@@ -86,16 +86,21 @@ function showOrder(product) {
 	const placeOrderBtn = document.querySelector('.place-order-btn');
 	orderForm.addEventListener('submit', (e) => {
 		e.preventDefault();
-		placeOrder({ product, total: total.textContent, placeOrderBtn });
+		const order = {
+			product,
+			quantity: quantityInput.value,
+			total: total.textContent,
+		};
+		placeOrder({ order, placeOrderBtn });
 	});
 }
 
-async function placeOrder({ product, total, placeOrderBtn }) {
+async function placeOrder({ order, placeOrderBtn }) {
 	const { account } = await connectWallet();
-	total = parseInt(total);
+	order.total = parseFloat(order.total);
 
 	try {
-		await payTo({ account, amount: total, placeOrderBtn });
+		await payTo({ account, order, placeOrderBtn });
 	} catch (error) {
 		alert(`Error placing order: ${error.message}`);
 	}

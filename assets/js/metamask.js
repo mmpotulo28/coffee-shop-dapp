@@ -1,4 +1,4 @@
-const state = {
+let state = {
 	connected: false,
 	account: null,
 };
@@ -11,53 +11,92 @@ async function connectWallet() {
 		if (accounts.length > 0) {
 			state.connected = true;
 			state.account = accounts[0];
-			return state;
 		} else {
 			alert('Please connect with MetaMask to use this dApp!');
 		}
 	} else {
 		alert('Please install MetaMask to use this dApp!');
 	}
-}
 
-function getState() {
+	// load contract
+	state = (await loadContract(window.web3)) || state;
 	return state;
 }
 
-async function payTo({ account, amount, placeOrderBtn }) {
-	// convert ammount from rands  to cUSD using the current exhange rate
-	amount = amount / 16;
+// load smart contract
+async function loadContract(web3) {
+	console.log('loading contract');
+	const { origin } = window.location;
+	const response = await fetch(`${origin}/abis/CoffeeShop.json`);
+	const data = await response.json();
+	const networkId = await web3.eth.net.getId();
+	const network = data.networks[networkId];
 
-	// convert amount to wei
-	amount = window.web3.utils.toWei(amount.toString(), 'ether');
-	console.log(amount);
+	if (!network) {
+		alert(
+			'Contract not deployed to the current network. Please select another network with Metamask.',
+		);
+		return;
+	}
 
-	placeOrderBtn.textContent = 'Processing...';
+	const { abi } = data;
+	const { address } = network;
+	const contract = new web3.eth.Contract(abi, address);
 
-	if (account) {
-		const options = {
-			to: '0x28323adb899EE5ea8E4C3C24DFe3E38E1117C559',
-			value: amount,
-			from: account,
-			gas: 5000000,
-		};
+	state.contract = contract;
+	state.address = address;
+	state.networkId = networkId;
 
-		await window.web3.eth
-			.sendTransaction(options)
-			.on('receipt', (receipt) => {
-				console.log(`Transaction successful! Transaction hash: ${receipt.transactionHash}`);
-				placeOrderBtn.textContent = 'Order Placed!';
-				placeOrderBtn.disabled = true;
-			})
-			.on('error', (error) => {
-				console.error(error);
-				alert('Transaction failed!', error);
-				placeOrderBtn.textContent = 'Place Order';
-			});
-	} else {
-		alert('Please connect with MetaMask to use this dApp!');
-		placeOrderBtn.textContent = 'Place Order';
+	console.log(state);
+
+	return state;
+}
+
+async function payTo({ account, placeOrderBtn, order }) {
+	try {
+		placeOrderBtn.textContent = 'Processing...';
+		const { contract } = state;
+		const { product, quantity, total } = order;
+		const coffeeName = product.name;
+		let price = total;
+		const { image } = product;
+
+		const tx = await contract.methods
+			.orderCoffee(coffeeName, image, price, quantity)
+			.send({ from: account, value: total });
+
+		// get balanceof contract
+		const balance = await contract.methods.getBalance().call();
+		// get number of orders
+		const orderCount = await contract.methods.getOrdersCount().call();
+		// get all orders
+		const orders = await contract.methods.getOrders().call();
+
+		console.log('balance:', balance);
+		console.log('orderCount:', orderCount);
+		console.log('orders:', orders);
+
+		console.log(tx);
+		alert('Order placed successfully!');
+		placeOrderBtn.textContent = 'Order Placed!';
+		placeOrderBtn.disabled = true;
+	} catch (error) {
+		console.error(error);
+		alert(`Error placing order: ${error.message}`);
+		placeOrderBtn.textContent = 'Try Again!';
 	}
 }
 
-export { connectWallet, getState, payTo };
+async function getOrders() {
+	const { contract } = await connectWallet();
+	const orders = await contract.methods.getOrders().call();
+	return orders;
+}
+
+async function getUserBalance() {
+	const { contract, account } = await connectWallet();
+	const balance = await contract.methods.getUserBalance().call();
+	return balance;
+}
+
+export { connectWallet, payTo, getOrders, getUserBalance };
