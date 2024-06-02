@@ -11,7 +11,6 @@ async function connectWallet() {
 		if (accounts.length > 0) {
 			state.connected = true;
 			state.account = accounts[0];
-			alert(`Connected with ${state.account}`);
 			return state;
 		} else {
 			alert('Please connect with MetaMask to use this dApp!');
