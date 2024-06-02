@@ -26,6 +26,30 @@ nav {
 	max-height: 70px;
 }
 
+nav .wallet-container {
+	display: flex;
+	justify-content: flex-start;
+	align-items: center;
+	background-color: var(--light-color);
+	padding: 5px 15px;
+	color: var(--font-color);
+	border-radius: 20px;
+	max-width: 120px;
+	overflow-y: hidden;
+	overflow-x: auto;
+
+	&::-webkit-scrollbar {
+		width: 10px;
+		height: 5px;
+		display: none;
+	}
+
+	&::-webkit-scrollbar-thumb {
+		background-color: var(--light-color);
+		border-radius: 10px;
+	}
+}
+
 nav .logo-side {
 	display: flex;
 	align-items: center;
@@ -233,7 +257,7 @@ nav .nav-items {
 
 .products .product-items {
 	display: grid;
-	grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+	grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
 	justify-content: flex-start;
 	align-items: center;
 	gap: 20px;
@@ -384,7 +408,7 @@ footer .social-icons i:hover {
 }
 
 .order-popup .close-btn {
-	background-color: var(--light-color);
+	background-color: transparent;
 	position: absolute;
 	color: var(--dark-color);
 	padding: 10px;

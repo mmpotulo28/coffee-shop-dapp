@@ -1,7 +1,9 @@
-import { connectWallet } from './metamask.js';
+import { connectWallet, payTo } from './metamask.js';
 import products from './products.js';
 const productItems = document.querySelector('.product-items');
 const popupOrder = document.querySelector('.order-popup');
+const connectWalletBtn = document.querySelector('#connect-wallet');
+const walletAddress = document.querySelector('.wallet-address');
 
 function renderProducts() {
 	productItems.innerHTML = '';
@@ -35,6 +37,11 @@ orderBtns.forEach((btn) => {
 	});
 });
 
+connectWalletBtn.addEventListener('click', async () => {
+	const { account } = await connectWallet();
+	walletAddress.textContent = account;
+});
+
 function showOrder(product) {
 	const popupContent = `
  <h1>Place your Order</h1>
@@ -49,7 +56,7 @@ function showOrder(product) {
       <div class="form-group">
        <h3>Total: R<span id="total">${product.price}</span></h3>
       </div>
-						<button type="submit">Place Order</button>
+						<button class="place-order-btn" type="submit">Place Order</button>
 					</form>
 				</div>
  `;
@@ -76,12 +83,20 @@ function showOrder(product) {
 	});
 
 	const orderForm = document.querySelector('#order-form');
+	const placeOrderBtn = document.querySelector('.place-order-btn');
 	orderForm.addEventListener('submit', (e) => {
 		e.preventDefault();
-		placeOrder({ product, total: total.textContent });
+		placeOrder({ product, total: total.textContent, placeOrderBtn });
 	});
 }
 
-async function placeOrder({ product, total }) {
-	const account = await connectWallet().account;
+async function placeOrder({ product, total, placeOrderBtn }) {
+	const { account } = await connectWallet();
+	total = parseInt(total);
+
+	try {
+		await payTo({ account, amount: total, placeOrderBtn });
+	} catch (error) {
+		alert(`Error placing order: ${error.message}`);
+	}
 }
