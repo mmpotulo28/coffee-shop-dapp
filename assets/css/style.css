@@ -659,6 +659,10 @@ footer .social-icons i:hover {
 	.customer-details span p {
 		font-weight: normal;
 	}
+
+	.social-icons {
+		gap: 10px !important;
+	}
 }
 
 @media screen and (max-width: 300px) {
