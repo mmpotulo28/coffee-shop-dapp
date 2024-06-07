@@ -30,7 +30,7 @@ const products = [
 	// black tea
 	{
 		id: 5,
-		name: 'Black Tea',
+		name: 'Rooibos Tea',
 		price: 15,
 		image: 'black-tea.png',
 	},
@@ -54,6 +54,34 @@ const products = [
 		name: 'Coffee with Milk',
 		price: 20,
 		image: 'black-coffee.avif',
+	},
+	// croissant
+	{
+		id: 9,
+		name: 'Croissant',
+		price: 18,
+		image: 'croissant.avif',
+	},
+	// muffins
+	{
+		id: 10,
+		name: 'Muffin',
+		price: 14,
+		image: 'muffins.jfif',
+	},
+	// cupcake
+	{
+		id: 11,
+		name: 'Cupcake',
+		price: 20,
+		image: 'cupcakes.webp',
+	},
+	// hazel
+	{
+		id: 12,
+		name: 'Instant Coffee',
+		price: 18,
+		image: 'hazelnut.jfif',
 	},
 ];
 

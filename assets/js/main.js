@@ -5,7 +5,7 @@ const popupOrder = document.querySelector('.order-popup');
 const connectWalletBtn = document.querySelector('#connect-wallet');
 const walletAddress = document.querySelector('.wallet-address');
 
-function renderProducts() {
+async function renderProducts() {
 	productItems.innerHTML = '';
 
 	products.forEach((product) => {
@@ -23,6 +23,9 @@ function renderProducts() {
 
 		productItems.appendChild(productItem);
 	});
+
+	const { account } = await connectWallet();
+	walletAddress.textContent = account;
 }
 
 renderProducts();
@@ -35,11 +38,6 @@ orderBtns.forEach((btn) => {
 		const product = products.find((product) => product.id == productId);
 		showOrder(product);
 	});
-});
-
-connectWalletBtn.addEventListener('click', async () => {
-	const { account } = await connectWallet();
-	walletAddress.textContent = account;
 });
 
 function showOrder(product) {
@@ -96,6 +94,7 @@ function showOrder(product) {
 }
 
 async function placeOrder({ order, placeOrderBtn }) {
+	placeOrderBtn.textContent = 'Processing...';
 	const { account } = await connectWallet();
 	order.total = parseFloat(order.total);
 
@@ -103,5 +102,6 @@ async function placeOrder({ order, placeOrderBtn }) {
 		await payTo({ account, order, placeOrderBtn });
 	} catch (error) {
 		alert(`Error placing order: ${error.message}`);
+		placeOrderBtn.textContent = 'Try Again!';
 	}
 }

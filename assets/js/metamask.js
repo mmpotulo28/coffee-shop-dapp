@@ -61,10 +61,12 @@ async function payTo({ account, placeOrderBtn, order }) {
 		let price = total;
 		const { image } = product;
 
+		let celoTotal = total / 13.92;
+
 		const txObject = {
 			from: account,
 			to: contract.options.address,
-			gas: 200000,
+			gas: 300000, // Increase the gas value to 300000 or higher
 			gasPrice: web3.utils.toWei('10', 'gwei'),
 			value: total,
 			data: contract.methods.orderCoffee(coffeeName, image, price, quantity).encodeABI(),
@@ -101,7 +103,7 @@ async function getOrders() {
 }
 
 async function getUserBalance() {
-	const { contract, account } = await connectWallet();
+	const { contract } = await connectWallet();
 	const balance = await contract.methods.getUserBalance().call();
 	return balance;
 }
