@@ -23,6 +23,30 @@ async function connectWallet() {
 	return state;
 }
 
+async function getBalance() {
+	let ABI = [
+		{
+			constant: true,
+			inputs: [{ name: '_owner', type: 'address' }],
+			name: 'balanceOf',
+			outputs: [{ name: 'balance', type: 'uint256' }],
+			type: 'function',
+		},
+	];
+
+	const rpcURL = 'https://alfajores-forno.celo-testnet.org';
+	const web3 = new Web3(rpcURL);
+
+	let myWallet = (await connectWallet()).account;
+	let fzarAddress = '0xF194afDf50B03e69Bd7D057c1Aa9e10c9954E4C9';
+
+	let contract = new web3.eth.Contract(ABI, fzarAddress);
+	let myBalance = await contract.methods.balanceOf(myWallet).call();
+	let readableBalance = web3.utils.fromWei(myBalance, 'ether');
+	console.log(readableBalance);
+	return readableBalance;
+}
+
 // load smart contract
 async function loadContract(web3) {
 	console.log('loading contract');
@@ -102,10 +126,4 @@ async function getOrders() {
 	return orders;
 }
 
-async function getUserBalance() {
-	const { contract } = await connectWallet();
-	const balance = await contract.methods.getUserBalance().call();
-	return balance;
-}
-
-export { connectWallet, payTo, getOrders, getUserBalance };
+export { connectWallet, payTo, getOrders, getBalance };

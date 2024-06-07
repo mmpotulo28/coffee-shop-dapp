@@ -1,4 +1,4 @@
-import { connectWallet, getOrders, getUserBalance } from './metamask.js';
+import { connectWallet, getOrders, getBalance } from './metamask.js';
 const orderItems = document.querySelector('.order-items');
 const customerWallet = document.querySelector('.customer-wallet');
 const customerBalance = document.querySelector('.customer-balance');
@@ -12,9 +12,8 @@ async function renderOrders() {
 	}
 	customerWallet.textContent = account;
 	walletAddress.textContent = account;
-	let balance = await getUserBalance();
+	let balance = await getBalance();
 	// format balance
-	balance = Number(balance) / 10 ** 18;
 	customerBalance.textContent = `${balance} CELO`;
 
 	const orders = await getOrders();
