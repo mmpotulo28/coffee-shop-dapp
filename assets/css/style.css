@@ -10,6 +10,9 @@
 	margin: 0;
 	padding: 0;
 	box-sizing: border-box;
+	scroll-behavior: smooth;
+	scroll-snap-align: start;
+	scroll-snap-type: proximity;
 }
 
 h1 {
@@ -19,6 +22,10 @@ h1 {
 
 button:disabled {
 	opacity: 0.5;
+}
+
+button:active {
+	transform: scale(0.9);
 }
 
 nav {
@@ -249,7 +256,7 @@ nav .nav-items {
 }
 
 /* all producst */
-.products {
+#products {
 	display: flex;
 	flex-direction: column;
 	justify-content: center;
@@ -259,7 +266,7 @@ nav .nav-items {
 	padding: 0;
 }
 
-.products .product-items {
+#products .product-items {
 	display: grid;
 	grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
 	justify-content: flex-start;
@@ -270,7 +277,7 @@ nav .nav-items {
 	padding: 20px;
 }
 
-.products .product-items .product-item {
+#products .product-items .product-item {
 	display: flex;
 	flex-direction: column;
 	justify-content: center;
@@ -284,19 +291,19 @@ nav .nav-items {
 	overflow: hidden;
 }
 
-.products .product-items .product-item img {
+#products .product-items .product-item img {
 	width: 150px;
 	height: 100px;
 	object-fit: contain;
 }
 
-.products .product-items .product-item h3 {
+#products .product-items .product-item h3 {
 	font-size: 20px;
 	color: var(--light-color);
 	margin: 10px;
 }
 
-.products .product-items .product-item .actions {
+#products .product-items .product-item .actions {
 	display: flex;
 	flex-direction: column;
 	flex-wrap: nowrap;
@@ -306,7 +313,7 @@ nav .nav-items {
 	margin-top: 10px;
 }
 
-.products .product-items .product-item .actions p {
+#products .product-items .product-item .actions p {
 	display: flex;
 	justify-content: center;
 	align-items: center;
@@ -315,7 +322,7 @@ nav .nav-items {
 	font-weight: bold;
 }
 
-.products .product-items .product-item .actions button {
+#products .product-items .product-item .actions button {
 	background-color: var(--prim-color);
 	color: var(--font-color);
 	padding: 10px;
@@ -326,7 +333,7 @@ nav .nav-items {
 	width: 150px;
 }
 
-.products .product-items .product-item .actions button:hover {
+#products .product-items .product-item .actions button:hover {
 	background-color: var(--light-color);
 }
 
