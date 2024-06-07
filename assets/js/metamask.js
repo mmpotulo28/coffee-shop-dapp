@@ -23,30 +23,6 @@ async function connectWallet() {
 	return state;
 }
 
-async function getBalance() {
-	let ABI = [
-		{
-			constant: true,
-			inputs: [{ name: '_owner', type: 'address' }],
-			name: 'balanceOf',
-			outputs: [{ name: 'balance', type: 'uint256' }],
-			type: 'function',
-		},
-	];
-
-	const rpcURL = 'https://alfajores-forno.celo-testnet.org';
-	const web3 = new Web3(rpcURL);
-
-	let myWallet = (await connectWallet()).account;
-	let fzarAddress = '0xF194afDf50B03e69Bd7D057c1Aa9e10c9954E4C9';
-
-	let contract = new web3.eth.Contract(ABI, fzarAddress);
-	let myBalance = await contract.methods.balanceOf(myWallet).call();
-	let readableBalance = web3.utils.fromWei(myBalance, 'ether');
-	console.log(readableBalance);
-	return readableBalance;
-}
-
 // load smart contract
 async function loadContract(web3) {
 	console.log('loading contract');
@@ -74,6 +50,48 @@ async function loadContract(web3) {
 	console.log(state);
 
 	return state;
+}
+
+async function getBalance() {
+	let ABI = [
+		{
+			constant: true,
+			inputs: [{ name: '_owner', type: 'address' }],
+			name: 'balanceOf',
+			outputs: [{ name: 'balance', type: 'uint256' }],
+			type: 'function',
+		},
+	];
+
+	let myWallet = state.account;
+	let tokenAddress = '0xF194afDf50B03e69Bd7D057c1Aa9e10c9954E4C9';
+
+	let contract = new window.web3.eth.Contract(ABI, tokenAddress);
+	let myBalance = await contract.methods.balanceOf(myWallet).call();
+	let readableBalance = window.web3.utils.fromWei(myBalance, 'ether');
+	console.log(readableBalance);
+
+	// send({ window.web3, account: myWallet });
+	return readableBalance;
+}
+
+async function send({ account }) {
+	const gasPrice = await window.web3.eth.getGasPrice();
+	const accountFrom = account;
+	const nonce = await window.web3.eth.getTransactionCount(accountFrom);
+	const tx = {
+		from: accountFrom,
+		gas: 21000,
+		to: '0x0717329c677ab484eaa73f4c8eed92a2fa948746',
+		value: window.web3.utils.toWei('1', 'ether'),
+		gasPrice: gasPrice,
+		nonce: nonce,
+	};
+
+	const receipt = await window.web3.eth.sendTransaction(tx);
+
+	console.log('Transaction receipt:', receipt);
+	return receipt;
 }
 
 async function payTo({ account, placeOrderBtn, order }) {

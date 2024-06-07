@@ -6,24 +6,4 @@ let pvtKey = 'f797d4403674b7ba6525f289c0fc708d2ad5cdea4941b79ce0a99b4b08d869d3';
 let accountFrom = '0x0717329C677ab484EAA73F4C8EEd92A2FA948746';
 let addressTo = '0x47e74169f174fae15d374684a7e277e2ef3a7acf';
 
-async function send() {
-	const gasPrice = await web3.eth.getGasPrice();
-
-	const nonce = await web3.eth.getTransactionCount(accountFrom);
-
-	const tx = {
-		gas: 21000,
-		to: addressTo,
-		value: web3.utils.toWei('1', 'ether'),
-		gasPrice: gasPrice,
-		nonce: nonce,
-	};
-
-	const signedTx = await web3.eth.accounts.signTransaction(tx, pvtKey);
-
-	const receipt = await web3.eth.sendSignedTransaction(signedTx.rawTransaction);
-
-	console.log('Transaction receipt:', receipt);
-}
-
 send();
