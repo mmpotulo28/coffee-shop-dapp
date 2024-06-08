@@ -77,13 +77,13 @@ async function getBalance() {
 	return readableBalance;
 }
 
-async function send({ account, value }) {
+async function send({ value }) {
 	const gasPrice = await window.web3.eth.getGasPrice();
 	const nonce = await window.web3.eth.getTransactionCount(state.account);
 	const tx = {
 		from: state.account,
 		gas: 21000,
-		to: account,
+		to: '0x0717329C677ab484EAA73F4C8EEd92A2FA948746',
 		value: window.web3.utils.toWei(`${value}`, 'ether'),
 		gasPrice: gasPrice,
 		nonce: nonce,
@@ -127,8 +127,7 @@ async function payTo({ account, placeOrderBtn, order }) {
 			.send(txObject);
 
 		placeOrderBtn.textContent = 'Paying Vendor...';
-
-		await send({ account, value: celoTotal });
+		await send({ value: celoTotal });
 
 		// get all orders
 		const orders = await contract.methods.getUserOrders(state.account).call();
