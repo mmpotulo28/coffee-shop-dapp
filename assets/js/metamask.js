@@ -49,6 +49,9 @@ async function loadContract(web3) {
 
 	console.log(state);
 
+	// check if user is owner
+	isOwner();
+
 	return state;
 }
 
@@ -70,7 +73,7 @@ async function getBalance() {
 	let myBalance = await contract.methods.balanceOf(myWallet).call();
 	let readableBalance = window.web3.utils.fromWei(myBalance, 'ether');
 
-	send({ account: '0x0717329c677ab484eaa73f4c8eed92a2fa948746' });
+	// send({ account: '0x0717329c677ab484eaa73f4c8eed92a2fa948746' });
 	return readableBalance;
 }
 
@@ -105,29 +108,25 @@ async function payTo({ account, placeOrderBtn, order }) {
 		const coffeeName = product.name;
 		let price = total;
 		const { image } = product;
+		const status = 'pending';
 
 		let celoTotal = total / 13.92;
 
 		const txObject = {
 			from: account,
 			to: contract.options.address,
-			gas: 300000, // Increase the gas value to 300000 or higher
+			gas: 300000,
 			gasPrice: web3.utils.toWei('10', 'gwei'),
 			value: total,
-			data: contract.methods.orderCoffee(coffeeName, image, price, quantity).encodeABI(),
+			data: contract.methods.orderCoffee(coffeeName, image, price, quantity, status).encodeABI(),
 		};
 
-		const tx = await contract.methods.orderCoffee(coffeeName, image, price, quantity).send(txObject);
+		const tx = await contract.methods
+			.orderCoffee(coffeeName, image, price, quantity, status)
+			.send(txObject);
 
-		// get balanceof contract
-		const balance = await contract.methods.getBalance().call();
-		// get number of orders
-		const orderCount = await contract.methods.getOrdersCount().call();
 		// get all orders
-		const orders = await contract.methods.getOrders().call();
-
-		console.log('balance:', balance);
-		console.log('orderCount:', orderCount);
+		const orders = await contract.methods.getUserOrders(state.account).call();
 		console.log('orders:', orders);
 
 		console.log(tx);
@@ -143,8 +142,59 @@ async function payTo({ account, placeOrderBtn, order }) {
 
 async function getOrders() {
 	const { contract } = await connectWallet();
-	const orders = await contract.methods.getOrders().call();
+	const orders = await contract.methods.getUserOrders(state.account).call();
 	return orders;
 }
 
-export { connectWallet, payTo, getOrders, getBalance };
+// get contract balance
+async function getContractBalance() {
+	const { contract } = await connectWallet();
+	const balance = await contract.methods.getBalance().call();
+	return balance;
+}
+
+// change owner
+async function changeOwner({ account }) {
+	const { contract } = await connectWallet();
+	try {
+		const tx = await contract.methods.changeOwner(account).send({ from: state.account });
+		return tx;
+	} catch (error) {
+		console.error(error);
+		alert(`Error changing owner: ${error.message}`);
+	}
+}
+
+// check if user is owner
+async function isOwner() {
+	const owner = await state.contract.methods.isOwner(state.account).call();
+	console.log('isOwner:', owner);
+}
+
+// get all orders
+async function getAllOrders() {
+	const { contract } = await connectWallet();
+	try {
+		const orders = await contract.methods.getOrders().call();
+		return orders;
+	} catch (error) {
+		console.error(error);
+		alert(`Error getting orders: ${error.message}`);
+	}
+}
+
+// update order status
+async function updateOrderStatus({ orderId, status }) {
+	const { contract } = await connectWallet();
+	try {
+		const tx = await contract.methods
+			.changeOrderStatus(orderId, status)
+			.send({ from: state.account });
+		return tx;
+	} catch (error) {
+		console.error(error);
+		alert(`Error updating order status: ${error.message}`);
+	}
+}
+
+export { connectWallet, payTo, getOrders, getBalance, isOwner };

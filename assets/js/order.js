@@ -1,4 +1,4 @@
-import { connectWallet, getOrders, getBalance } from './metamask.js';
+import { connectWallet, getOrders, getBalance, isOwner } from './metamask.js';
 const orderItems = document.querySelector('.order-items');
 const customerWallet = document.querySelector('.customer-wallet');
 const customerBalance = document.querySelector('.customer-balance');
@@ -17,6 +17,7 @@ async function renderOrders() {
 	customerBalance.textContent = `${balance} CELO`;
 
 	const orders = await getOrders();
+	console.log(orders);
 	if (orders.length === 0) {
 		orderItems.innerHTML = '<p>No orders available</p>';
 		return;
@@ -33,10 +34,13 @@ async function renderOrders() {
 							<p>Price: ${order.price / order.quantity}</p>
 							<p>Quantity: ${order.quantity}</p>
 							<p>Total: ${order.price}</p>
+							<p>Status: ${order.status}</p>
 						</div>
 					</div>`;
 		orderItems.innerHTML += orderHTML;
 	}
 }
+
+// check if user is admin
 
 renderOrders();

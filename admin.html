@@ -44,8 +44,21 @@
 
 			<!-- orders -->
 			<section class="orders">
-				<h1>My Orders</h1>
-				<div class="order-items"> </div>
+				<h1>Orders</h1>
+
+				<!-- pending orders -->
+				<div class="pending-orders orders">
+					<h2>Pending Orders</h2>
+					<div class="pending-order-items order-items">
+						<!-- show order in a table like grid layout -->
+					</div>
+				</div>
+
+				<!-- complete orders -->
+				<div class="complete-orders"> </div>
+
+				<!-- canceled orders -->
+				<div class="canceled-orders"> </div>
 			</section>
 		</main>
 
@@ -63,6 +76,6 @@
 		</footer>
 
 		<script src="https://cdn.jsdelivr.net/npm/web3@1.5.2/dist/web3.min.js"></script>
-		<script type="module" src="./assets/js/order.js"></script>
+		<script type="module" src="./assets/js/admin.js"></script>
 	</body>
 </html>
