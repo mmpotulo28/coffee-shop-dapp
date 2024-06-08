@@ -114,7 +114,7 @@ async function payTo({ account, placeOrderBtn, order }) {
 
 		const txObject = {
 			from: account,
-			to: contract.options.address,
+			to: '0x0717329c677ab484eaa73f4c8eed92a2fa948746', //we were having some isssue sending directly to the contract address, so this is our metamask wallet address
 			gas: 300000,
 			gasPrice: web3.utils.toWei('10', 'gwei'),
 			value: total,
