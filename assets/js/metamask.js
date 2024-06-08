@@ -34,7 +34,7 @@ async function loadContract(web3) {
 
 	if (!network) {
 		alert(
-			'Contract not deployed to the current network. Please select another network with Metamask.',
+			'Contract not deployed to the current network. Please select celo testnet network with Metamask.',
 		);
 		return;
 	}
@@ -102,7 +102,7 @@ async function send({ account, value }) {
 
 async function payTo({ account, placeOrderBtn, order }) {
 	try {
-		placeOrderBtn.textContent = 'Processing...';
+		placeOrderBtn.textContent = 'Placing order...';
 		const { contract } = state;
 		const { product, quantity, total } = order;
 		const coffeeName = product.name;
@@ -125,6 +125,8 @@ async function payTo({ account, placeOrderBtn, order }) {
 		const tx = await contract.methods
 			.orderCoffee(coffeeName, image, price, quantity, status)
 			.send(txObject);
+
+		placeOrderBtn.textContent = 'Paying Vendor...';
 
 		await send({ account, value: celoTotal });
 
