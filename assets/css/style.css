@@ -68,6 +68,7 @@ nav .wallet-container {
 
 main {
 	background-color: rgba(255, 255, 255, 0.968);
+	min-height: 90vh;
 }
 
 nav .logo-side {
@@ -545,13 +546,14 @@ footer .social-icons i:hover {
 .orders {
 	display: flex;
 	flex-direction: column;
-	justify-content: center;
+	justify-content: flex-start;
 	align-items: center;
 	margin: 0;
 	width: 100%;
 	padding: 20px 0;
 	background-color: var(--light-color);
 	gap: 30px;
+	min-height: 80vh;
 }
 
 .orders h1 {
@@ -641,7 +643,7 @@ footer .social-icons i:hover {
 .pending-orders {
 	display: flex;
 	flex-direction: column;
-	justify-content: center;
+	justify-content: flex-start;
 	align-items: center;
 	margin: 0;
 	width: 100%;
@@ -694,17 +696,44 @@ footer .social-icons i:hover {
 	display: flex;
 	flex-direction: column;
 	justify-content: center;
-	align-items: center;
+	align-items: flex-start;
 	min-width: fit-content;
 	max-width: 400px !important;
 	overflow: hidden;
+	max-height: 400px;
+	min-height: 400px;
+	min-width: 250px;
+	gap: 0;
 }
+.pending-orders .pending-order-items .order-item .order-user {
+	max-width: 100%;
+	overflow-x: auto;
+	overflow-y: hidden;
 
+	&::-webkit-scrollbar {
+		height: 4px;
+		width: 4px;
+	}
+
+	&::-webkit-scrollbar-thumb {
+		background-color: var(--light-color);
+		border-radius: 40px;
+	}
+
+	&::-webkit-scrollbar-thumb:hover {
+		background-color: var(--dark-color);
+	}
+}
 .pending-orders .pending-order-items .order-item img {
 	width: 150px;
-	height: auto;
+	height: 150px;
 	object-fit: contain;
 	margin: auto;
+	overflow: hidden;
+}
+
+.pending-orders .pending-order-items .order-item .order-details {
+	width: 100%;
 }
 
 .pending-orders .pending-order-items .order-item .order-details .change-status-btn {

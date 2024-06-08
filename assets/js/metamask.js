@@ -183,18 +183,4 @@ async function getAllOrders() {
 	}
 }
 
-// update order status
-async function updateOrderStatus({ orderId, status }) {
-	const { contract } = await connectWallet();
-	try {
-		const tx = await contract.methods
-			.changeOrderStatus(orderId, status)
-			.send({ from: state.account });
-		return tx;
-	} catch (error) {
-		console.error(error);
-		alert(`Error updating order status: ${error.message}`);
-	}
-}
-
-export { connectWallet, payTo, getOrders, getBalance, isOwner };
+export { connectWallet, payTo, getOrders, getBalance, isOwner, getAllOrders, getContractBalance };

@@ -30,7 +30,7 @@ contract CoffeeShop {
         totalFunds -= amount;
     }
 
-    function getBalance() public view onlyOwner returns (uint) {
+    function getBalance() public view returns (uint) {
         return totalFunds;
     }
 
@@ -71,11 +71,6 @@ contract CoffeeShop {
 
         // use the recieve method to store the payment
         totalFunds += msg.value;
-    }
-
-    // change order status
-    function changeOrderStatus(uint index) public onlyOwner {
-        orders[index].status = "Completed";
     }
 
     function getOrdersCount() public view returns (uint) {
