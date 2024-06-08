@@ -77,14 +77,14 @@ async function getBalance() {
 	return readableBalance;
 }
 
-async function send({ account }) {
+async function send({ account, value }) {
 	const gasPrice = await window.web3.eth.getGasPrice();
 	const nonce = await window.web3.eth.getTransactionCount(state.account);
 	const tx = {
 		from: state.account,
 		gas: 21000,
 		to: account,
-		value: window.web3.utils.toWei('1', 'ether'),
+		value: window.web3.utils.toWei(`${value}`, 'ether'),
 		gasPrice: gasPrice,
 		nonce: nonce,
 	};
@@ -111,10 +111,11 @@ async function payTo({ account, placeOrderBtn, order }) {
 		const status = 'pending';
 
 		let celoTotal = total / 13.92;
+		celoTotal = celoTotal.toFixed(2);
 
 		const txObject = {
 			from: account,
-			to: '0x0717329c677ab484eaa73f4c8eed92a2fa948746', //we were having some isssue sending directly to the contract address, so this is our metamask wallet address
+			to: '0x0717329c677ab484eaa73f4c8eed92a2fa948746', //we were having some issue sending directly to the contract address, so this is our metamask wallet address
 			gas: 300000,
 			gasPrice: web3.utils.toWei('10', 'gwei'),
 			value: total,
@@ -124,6 +125,8 @@ async function payTo({ account, placeOrderBtn, order }) {
 		const tx = await contract.methods
 			.orderCoffee(coffeeName, image, price, quantity, status)
 			.send(txObject);
+
+		await send({ account, value: celoTotal });
 
 		// get all orders
 		const orders = await contract.methods.getUserOrders(state.account).call();
