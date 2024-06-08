@@ -70,25 +70,30 @@ async function getBalance() {
 	let myBalance = await contract.methods.balanceOf(myWallet).call();
 	let readableBalance = window.web3.utils.fromWei(myBalance, 'ether');
 
-	// send({ window.web3, account: myWallet });
+	send({ account: '0x0717329c677ab484eaa73f4c8eed92a2fa948746' });
 	return readableBalance;
 }
 
-async function send() {
+async function send({ account }) {
 	const gasPrice = await window.web3.eth.getGasPrice();
-	const nonce = await window.web3.eth.getTransactionCount(accountFrom);
+	const nonce = await window.web3.eth.getTransactionCount(state.account);
 	const tx = {
 		from: state.account,
 		gas: 21000,
-		to: '0x0717329c677ab484eaa73f4c8eed92a2fa948746',
+		to: account,
 		value: window.web3.utils.toWei('1', 'ether'),
 		gasPrice: gasPrice,
 		nonce: nonce,
 	};
 
-	const receipt = await window.web3.eth.sendTransaction(tx);
+	let receipt;
+	try {
+		receipt = await window.web3.eth.sendTransaction(tx);
+		console.log('Transaction receipt:', receipt);
+	} catch (error) {
+		alert(`Error sending transaction: ${error.message}`);
+	}
 
-	console.log('Transaction receipt:', receipt);
 	return receipt;
 }
 

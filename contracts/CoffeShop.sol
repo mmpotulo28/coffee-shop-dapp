@@ -61,4 +61,8 @@ contract CoffeeShop {
     function getOrders() public view returns (Order[] memory) {
         return orders;
     }
+
+    // get user orders
+    
+
 }
