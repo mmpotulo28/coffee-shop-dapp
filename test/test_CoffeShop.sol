@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.0;
+pragma solidity 0.8.0;
 
 import "truffle/Assert.sol";
-import "../contracts/CoffeShop.sol";
+import "../contracts/CoffeeShop.sol";
 
 contract TestCoffeeShop {
     CoffeeShop coffeeShop;
@@ -13,67 +13,82 @@ contract TestCoffeeShop {
 
     function testOrderCoffee() public {
         string memory coffeeName = "Espresso";
-        uint256 price = 100;
-        uint256 quantity = 2;
+        string memory image = "espresso.jpg";
+        uint price = 100;
+        uint quantity = 1;
+        string memory status = "Pending";
 
-        coffeeShop.orderCoffee{value: price * quantity}(
-            addressToString(msg.sender),
+        coffeeShop.orderCoffee{value: price}(
             coffeeName,
+            image,
             price,
-            quantity
+            quantity,
+            status
         );
 
-        uint256 expectedOrdersCount = 1;
         Assert.equal(
             coffeeShop.getOrdersCount(),
-            expectedOrdersCount,
-            "Incorrect orders count"
+            1,
+            "Incorrect number of orders"
         );
-
-        (
-            address customer,
-            string memory orderedCoffeeName,
-            uint256 orderedPrice,
-            uint256 orderedQuantity
-        ) = coffeeShop.getOrder(0);
-        Assert.equal(customer, address(this), "Incorrect customer address");
-        Assert.equal(orderedCoffeeName, coffeeName, "Incorrect coffee name");
-        Assert.equal(orderedPrice, price, "Incorrect price");
-        Assert.equal(orderedQuantity, quantity, "Incorrect quantity");
+        Assert.equal(coffeeShop.getBalance(), price, "Incorrect total funds");
     }
 
     function testWithdrawFunds() public {
-        uint256 initialBalance = address(this).balance;
+        uint amount = 100;
+        coffeeShop.withdrawFunds(amount);
 
-        coffeeShop.orderCoffee{value: 100}("Espresso", 100, 1);
-        coffeeShop.orderCoffee{value: 200}("Latte", 200, 2);
-
-        uint256 expectedBalance = initialBalance + 300;
         Assert.equal(
             coffeeShop.getBalance(),
-            expectedBalance,
-            "Incorrect contract balance"
-        );
-
-        coffeeShop.withdrawFunds();
-
-        expectedBalance = initialBalance;
-        Assert.equal(
-            coffeeShop.getBalance(),
-            expectedBalance,
-            "Incorrect contract balance"
+            0,
+            "Incorrect total funds after withdrawal"
         );
     }
 
-    function testChangeOwner() public {
-        address newOwner = address(0x123);
+    function testGetUserOrders() public {
+        address account = address(this);
 
-        coffeeShop.changeOwner(newOwner);
+        string memory coffeeName1 = "Cappuccino";
+        string memory image1 = "cappuccino.jpg";
+        uint price1 = 150;
+        uint quantity1 = 2;
+        string memory status1 = "Completed";
 
+        string memory coffeeName2 = "Latte";
+        string memory image2 = "latte.jpg";
+        uint price2 = 120;
+        uint quantity2 = 1;
+        string memory status2 = "Pending";
+
+        coffeeShop.orderCoffee{value: price1}(
+            coffeeName1,
+            image1,
+            price1,
+            quantity1,
+            status1
+        );
+        coffeeShop.orderCoffee{value: price2}(
+            coffeeName2,
+            image2,
+            price2,
+            quantity2,
+            status2
+        );
+
+        CoffeeShop.Order[] memory userOrders = coffeeShop.getUserOrders(
+            account
+        );
+
+        Assert.equal(userOrders.length, 2, "Incorrect number of user orders");
         Assert.equal(
-            coffeeShop.getContractOwner(),
-            newOwner,
-            "Incorrect contract owner"
+            userOrders[0].coffeeName,
+            coffeeName1,
+            "Incorrect coffee name for first order"
+        );
+        Assert.equal(
+            userOrders[1].coffeeName,
+            coffeeName2,
+            "Incorrect coffee name for second order"
         );
     }
 }
