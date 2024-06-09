@@ -46,12 +46,10 @@ async function loadContract(web3) {
 	state.contract = contract;
 	state.address = address;
 	state.networkId = networkId;
-
 	console.log(state);
 
 	// check if user is owner
 	isOwner();
-
 	return state;
 }
 
@@ -102,7 +100,6 @@ async function send({ value }) {
 
 async function payTo({ account, placeOrderBtn, order }) {
 	try {
-		placeOrderBtn.textContent = 'Placing order...';
 		const { contract } = state;
 		const { product, quantity, total } = order;
 		const coffeeName = product.name;
@@ -113,6 +110,9 @@ async function payTo({ account, placeOrderBtn, order }) {
 		let celoTotal = total / 13.92;
 		celoTotal = celoTotal.toFixed(2);
 
+		placeOrderBtn.textContent = 'Paying Vendor...';
+		await send({ value: celoTotal });
+
 		const txObject = {
 			from: account,
 			to: '0x0717329c677ab484eaa73f4c8eed92a2fa948746', //we were having some issue sending directly to the contract address, so this is our metamask wallet address
@@ -122,16 +122,13 @@ async function payTo({ account, placeOrderBtn, order }) {
 			data: contract.methods.orderCoffee(coffeeName, image, price, quantity, status).encodeABI(),
 		};
 
+		placeOrderBtn.textContent = 'Placing order...';
 		const tx = await contract.methods
 			.orderCoffee(coffeeName, image, price, quantity, status)
 			.send(txObject);
 
-		placeOrderBtn.textContent = 'Paying Vendor...';
-		await send({ value: celoTotal });
-
 		// get all orders
 		const orders = await contract.methods.getUserOrders(state.account).call();
-		console.log('orders:', orders);
 
 		console.log(tx);
 		alert('Order placed successfully!');
